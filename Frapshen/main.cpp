@@ -19,9 +19,11 @@ void SetCursor(int x, int y)
 	COORD myCoords = { x,y };//инициализируем передаваемыми значениями объект координат
 	SetConsoleCursorPosition(hStdOut, myCoords);
 }
-
-
-
+class Fraction;
+Fraction operator-(Fraction left, Fraction right);
+Fraction operator*(Fraction left, Fraction right);
+Fraction operator/(Fraction left, Fraction right);
+Fraction operator+(const Fraction& left, const Fraction& right);
 class Fraction
 {
 	int integer; //целое число
@@ -147,6 +149,24 @@ public:
 		return inverted;
 	}
 
+	Fraction& reduse()
+	{
+		int more, less, rest = 0;
+		if (numerator > denominator)more = numerator, less = denominator;
+		else less = numerator, more = denominator;
+		do
+		{
+			rest = more % less;
+			more = less;
+			less = rest;
+		} while (rest);
+
+		int GCD = more;//GCD-Greates(Наибольший делитель)
+		numerator /= GCD;
+		denominator /= GCD;
+		return*this;
+	}
+
 
 	//			Operator
 
@@ -165,10 +185,10 @@ public:
 		this->denominator = obj.denominator;
 		return *this;
 	}
-
-	Fraction& operator+=(const Fraction obj)
+	Fraction& operator+=(Fraction obj)
 	{
-		this->integer = this->integer + obj.integer;
+		return *this = *this + obj;
+		/*this->integer = this->integer + obj.integer;
 		if (this->denominator == obj.denominator)
 		{
 			this->numerator = this->numerator + obj.numerator;
@@ -180,11 +200,12 @@ public:
 
 		}
 
-		return this->to_proper();
+		return this->to_proper();*/
 	}
 	Fraction& operator -=(Fraction obj)
 	{
-		this->to_improper();
+		return *this = *this - obj;
+		/*this->to_improper();
 		obj.to_improper();
 		if (this->denominator == obj.denominator)
 		{
@@ -196,24 +217,42 @@ public:
 			this->denominator = this->denominator * obj.denominator;
 		}
 		this->to_proper();
-		return *this;
+		return *this;*/
 
 	}
 	Fraction& operator *=(Fraction obj)
 	{
-		this->to_improper();
-		obj.to_improper();
+		return *this = *this * obj;
 
-		this->numerator = this->numerator * obj.numerator;
-		this->denominator = this->denominator * obj.denominator;
-		return this->to_proper();
 	}
 	Fraction& operator /=(Fraction obj)
 	{
+		return *this = *this / obj;
+		/**this *= obj.indverted();
+		return this->to_proper();*/
 
-		*this *= obj.indverted();
-		return this->to_proper();
-
+	}
+	Fraction& operator++()
+	{
+		integer++;
+		return *this;
+	}
+	Fraction& operator++(int)
+	{
+		Fraction old = *this;
+		integer++;
+		return old;
+	}
+	Fraction& operator--()
+	{
+		integer--;
+		return *this;
+	}
+	Fraction& operator--(int)
+	{
+		Fraction old = *this;
+		integer--;
+		return old;
 	}
 
 };
@@ -313,7 +352,7 @@ Fraction operator*(Fraction left, Fraction right)
 	(
 		left.get_numerator() * right.get_numerator(),
 		left.get_denominator() * right.get_denominator()
-	).to_proper();
+	).to_proper().reduse();
 
 
 }
@@ -409,9 +448,9 @@ void main()
 	A.Print();
 	cout << "------------" << endl;*/
 	Fraction B(3, 4, 5);
-	A -= B;
+	A *= B;
+	A /= B;
 	cout << "/" << endl;
-
 	A.Print();
 	B.Print();
 
