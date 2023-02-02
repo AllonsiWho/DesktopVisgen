@@ -362,6 +362,11 @@ Fraction operator/(Fraction left, Fraction right)
 	return left * right.indverted();
 
 }
+std::ostream& operator<<(std::ostream& os, const Fraction& obj)
+{
+	return os << obj.get_integer() << "(" << obj.get_numerator() << "/" << obj.get_denominator() << ")";
+
+}
 bool operator >(Fraction left, Fraction right)
 {
 	left.to_proper();
@@ -453,5 +458,5 @@ void main()
 	cout << "/" << endl;
 	A.Print();
 	B.Print();
-
+	cout << A;
 }
