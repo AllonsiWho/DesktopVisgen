@@ -1,4 +1,4 @@
-﻿//Fraction
+﻿
 #include<iostream>
 #include <conio.h>
 
@@ -63,7 +63,7 @@ public:
 		this->denominator = 1;
 		//cout << "DefautConstructor\t" << this << endl;
 	}
-	Fraction(int integer)
+	explicit Fraction(int integer)
 	{
 		this->integer = integer;
 		this->numerator = 0;
@@ -94,6 +94,13 @@ public:
 	{
 		//cout << "\nDestructor:\t" << this << endl;
 	}
+	// Type-cast-operators:
+	explicit operator int()const
+	{
+		return Fraction(*this).to_proper().integer;
+	}
+
+
 	//			Method
 
 	void Print()const
@@ -154,12 +161,12 @@ public:
 		int more, less, rest = 0;
 		if (numerator > denominator)more = numerator, less = denominator;
 		else less = numerator, more = denominator;
-		do 
+		do
 		{
 			rest = more % less;
 			more = less;
 			less = rest;
-		}while(rest);
+		} while (rest);
 
 		int GCD = more;//GCD-Greates(Наибольший делитель)
 		numerator /= GCD;
@@ -185,7 +192,7 @@ public:
 		this->denominator = obj.denominator;
 		return *this;
 	}
-	Fraction& operator+=( Fraction obj)
+	Fraction& operator+=(Fraction obj)
 	{
 		return *this = *this + obj;
 		/*this->integer = this->integer + obj.integer;
@@ -223,7 +230,7 @@ public:
 	Fraction& operator *=(Fraction obj)
 	{
 		return *this = *this * obj;
-		
+
 	}
 	Fraction& operator /=(Fraction obj)
 	{
@@ -362,78 +369,83 @@ Fraction operator/(Fraction left, Fraction right)
 	return left * right.indverted();
 
 }
+std::ostream& operator<<(std::ostream& os, const Fraction& obj)
+{
+	return os << obj.get_integer() << "(" << obj.get_numerator() << "/" << obj.get_denominator() << ")";
+
+}
+/////////////////////////////////////////////////////////////////////////////////////////
+/////////                            comparision operators                      /////////
+/////////////////////////////////////////////////////////////////////////////////////////
 bool operator >(Fraction left, Fraction right)
 {
-	left.to_proper();
-	right.to_proper();
+	left.to_improper();
+	right.to_improper();
 
-	if (left.get_integer() > right.get_integer())
-	{
-		return true;
-	}
-	else return false;
+	//if (left.get_integer() > right.get_integer())
+	//{
+	//	return true;
+	//}
+	//else return false;
+
+	return left.get_numerator() * right.get_denominator() >
+		right.get_numerator() * left.get_denominator();
 
 }
 bool operator <(Fraction left, Fraction right)
 {
-	left.to_proper();
-	right.to_proper();
+	left.to_improper();
+	right.to_improper();
 
-	if (left.get_integer() < right.get_integer())
-	{
-		return true;
-	}
-	else return false;
+
+
+	return left.get_numerator() * right.get_denominator() <
+		right.get_numerator() * left.get_denominator();
 }
 bool operator ==(Fraction left, Fraction right)
 {
-	left.to_proper();
-	right.to_proper();
+	left.to_improper();
+	right.to_improper();
 
-	if (left.get_integer() == right.get_integer())
+	/*if (left.get_integer() == right.get_integer())
 	{
 		return true;
 	}
-	else return false;
+	else return false;*/
+
+
+	return left.get_numerator() * right.get_denominator() ==
+		right.get_numerator() * left.get_denominator();
+
+
 }
-bool operator !=(Fraction left, Fraction right)
+bool operator !=(const Fraction& left, const Fraction& right)
 {
-	left.to_proper();
-	right.to_proper();
-
-	if (left.get_integer() != right.get_integer())
-	{
-		return true;
-	}
-	else return false;
+	return !(left == right);// Не равно
 }
-bool operator >=(Fraction left, Fraction right)
+bool operator >=(const Fraction& left, const Fraction& right)
 {
-	left.to_proper();
-	right.to_proper();
-
-	if (left.get_integer() >= right.get_integer())
-	{
-		return true;
-	}
-	else return false;
+	//return left > right || left == right;
+	return !(left < right);//Больше или равно это не меньше 
 }
-bool operator <=(Fraction left, Fraction right)
+bool operator <=(const Fraction& left, const Fraction& right)
 {
-	left.to_proper();
-	right.to_proper();
-
-	if (left.get_integer() <= right.get_integer())
-	{
-		return true;
-	}
-	else return false;
+	return left < right || left == right;
+	//return!(left > right);
 }
+//#define ARIFMETICAL_OPERAND_CHEK
+//#define COMPERESSON_OPERATOR
+//#define TYPE_CONVERSION_BASICS
+//#define CONVERSION_FROM_OTHER_TO_CLASS
+
 void main()
 {
 	setlocale(LC_ALL, "");
 
-	Fraction A(2, 3, 4);
+	//Fraction A(2, 3, 4);
+#ifdef ARIFMETICAL_OPERAND_CHEK
+
+
 
 	A.Print();
 	//cout << "Введите простую дробь ";cin >> obj;
@@ -450,8 +462,37 @@ void main()
 	Fraction B(3, 4, 5);
 	A *= B;
 	A /= B;
-	cout << "/" << endl;	
+	cout << "/" << endl;
 	A.Print();
 	B.Print();
+	cout << A;
+#endif // ARIFMETICAL_OPERAND_CHEK
 
+#ifdef COMPERESSON_OPERATOR
+cout << (Fraction(1, 2) >= Fraction(5, 10)) << endl;
+#endif // COMPERESSON_OPERATOR
+#ifdef TYPE_CONVERSION_BASICS
+
+
+
+int a = 2;//No conversion
+double b = 3;//Conversion from less to more
+int c = b;//Conversion from more to less with no date loss
+int d = 4.5;//Conversion from more to less with data loss
+#endif // TYPE_CONVERSION_BASICS
+#ifdef CONVERSION_FROM_OTHER_TO_CLASS
+
+
+
+Fraction A = (Fraction)5;//Conversin from other to cllass Конструктором с 1 аргументам 
+A.Print();
+Fraction B;
+B = Fraction (8);//Conversion from other to class Оператором присваеванием 
+//explicit
+#endif // 
+
+Fraction A(2, 3, 4);
+A.Print();
+int a = (int)A;
+cout << a << endl;
 }

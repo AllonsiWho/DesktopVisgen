@@ -1,7 +1,7 @@
 //Fraction
 #include<iostream>
 #include <conio.h>
-
+#include <cmath>
 #include<Windows.h>
 
 using namespace std;
@@ -70,6 +70,27 @@ public:
 		this->denominator = 1;
 		//cout << "1ArgConstructor\t" << this << endl;
 	}
+	 Fraction(double integer)
+	 {
+		 this->integer = integer/2;
+		double num=integer;
+		int coll=0;		
+		//cout << num - (int)num;
+		while (num - (int)num != 0)
+		{
+			num *= 10;
+			coll++;
+		}
+
+		this->numerator = integer * pow(10, coll);
+		this->denominator = 1*pow(10, coll);
+		
+		this->reduse().to_proper();
+		
+
+
+		
+	}
 	Fraction(int numerator, int denominator)
 	{
 		this->integer = 0;
@@ -94,6 +115,14 @@ public:
 	{
 		//cout << "\nDestructor:\t" << this << endl;
 	}
+	//       Type-cast-operators:
+	explicit operator double()const
+	{
+		return ((double)integer + ((double)numerator / denominator));
+	}
+
+
+
 	//			Method
 
 	void Print()const
@@ -367,78 +396,76 @@ std::ostream& operator<<(std::ostream& os, const Fraction& obj)
 	return os << obj.get_integer() << "(" << obj.get_numerator() << "/" << obj.get_denominator() << ")";
 
 }
+///////////////////////////////////////////////////////////////////////////////////////////
+///////////                            comparision operators                      /////////
+///////////////////////////////////////////////////////////////////////////////////////////
 bool operator >(Fraction left, Fraction right)
 {
-	left.to_proper();
-	right.to_proper();
+	left.to_improper();
+	right.to_improper();
 
-	if (left.get_integer() > right.get_integer())
-	{
-		return true;
-	}
-	else return false;
+	//if (left.get_integer() > right.get_integer())
+	//{
+	//	return true;
+	//}
+	//else return false;
+
+	return left.get_numerator() * right.get_denominator() >
+		right.get_numerator() * left.get_denominator();
 
 }
 bool operator <(Fraction left, Fraction right)
 {
-	left.to_proper();
-	right.to_proper();
+	left.to_improper();
+	right.to_improper();
 
-	if (left.get_integer() < right.get_integer())
-	{
-		return true;
-	}
-	else return false;
+	
+
+	return left.get_numerator() * right.get_denominator() <
+		right.get_numerator() * left.get_denominator();
 }
 bool operator ==(Fraction left, Fraction right)
 {
-	left.to_proper();
-	right.to_proper();
+	left.to_improper();
+	right.to_improper();
 
-	if (left.get_integer() == right.get_integer())
+	/*if (left.get_integer() == right.get_integer())
 	{
 		return true;
 	}
-	else return false;
+	else return false;*/
+
+
+	return left.get_numerator() * right.get_denominator() ==
+		right.get_numerator() * left.get_denominator();
+
+	
 }
-bool operator !=(Fraction left, Fraction right)
+bool operator !=(const Fraction& left, const Fraction& right)
 {
-	left.to_proper();
-	right.to_proper();
-
-	if (left.get_integer() != right.get_integer())
-	{
-		return true;
-	}
-	else return false;
+	return !(left == right);// Не равно
 }
-bool operator >=(Fraction left, Fraction right)
+bool operator >=(const Fraction& left, const Fraction& right)
 {
-	left.to_proper();
-	right.to_proper();
-
-	if (left.get_integer() >= right.get_integer())
-	{
-		return true;
-	}
-	else return false;
+	//return left > right || left == right;
+	return !(left < right);//Больше или равно это не меньше 
 }
-bool operator <=(Fraction left, Fraction right)
+bool operator <=(const Fraction& left, const Fraction& right)
 {
-	left.to_proper();
-	right.to_proper();
-
-	if (left.get_integer() <= right.get_integer())
-	{
-		return true;
-	}
-	else return false;
+	return left < right || left == right;
+	//return!(left > right);
 }
+//#define ARIFMETICAL_OPERAND_CHEK
+//#define HOME_WORK_1
+#define HOME_WORK_2
 void main()
 {
 	setlocale(LC_ALL, "");
 
-	Fraction A(2, 3, 4);
+	///Fraction A(2, 3, 4);
+#ifdef ARIFMETICAL_OPERAND_CHEK
+
+
 
 	A.Print();
 	//cout << "Введите простую дробь ";cin >> obj;
@@ -459,4 +486,26 @@ void main()
 	A.Print();
 	B.Print();
 	cout << A;
+#endif // ARIFMETICAL_OPERAND_CHEK
+//cout << (Fraction(1, 2) >= Fraction(5, 10)) << endl;
+	
+#ifdef HOME_WORK_1
+
+
+
+	Fraction B(2, 3, 4);
+	double b = (double)B;	
+	cout << b << endl;
+#endif // HOME_WORK_1	
+#ifdef HOME_WORK_2
+
+	Fraction B = 2.5;
+	cout << B << endl;
+
+
+#endif // HOME_WORK_2
+
+
+
+
 }
