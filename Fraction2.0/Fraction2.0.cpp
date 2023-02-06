@@ -1,4 +1,4 @@
-﻿
+﻿#define _CRT_SECURE_NO_WARNINGS
 #include<iostream>
 #include <conio.h>
 
@@ -70,6 +70,17 @@ public:
 		this->denominator = 1;
 		//cout << "1ArgConstructor\t" << this << endl;
 	}
+	Fraction(double decimal)
+	{
+		decimal += 1e-9;
+		this->integer = decimal; //сохраняем целую часть.
+		decimal -= integer; //убираем целую часть из десятичной дроби
+		this->denominator = 1e+9;
+		this->numerator = decimal * denominator;
+		reduse();
+	}
+
+
 	Fraction(int numerator, int denominator)
 	{
 		this->integer = 0;
@@ -99,11 +110,16 @@ public:
 	{
 		return Fraction(*this).to_proper().integer;
 	}
+	explicit operator double() const
+	{
+		return integer + (double)numerator / denominator;
+	}
+
 
 
 	//			Method
 
-	void Print()const
+	std::ostream& Print(std::ostream& os)const
 	{
 		/*static int a = 0;
 		if (integer)
@@ -131,7 +147,7 @@ public:
 			if (integer)cout << ")";
 		}
 		else if (integer == 0)cout << 0;
-		cout << endl;
+		return os;
 	}
 
 	Fraction& to_proper()
@@ -266,11 +282,35 @@ public:
 
 std::istream& operator>>(std::istream& is, Fraction& obj)
 {
-	int x, y, z;
+	/*int integer, numerator, denominator;
 
-	is >> x >> y >> z;
-	obj(x, y, z);
-	return is;
+	is >> integer >> numerator >> denominator;
+	obj(integer, numerator, denominator);*/
+	const int size = 32;
+	char bufer[size] = {};
+	char delimiter[] = "/ ()";
+	int number[3] = {};
+	is >> bufer;
+	is.getline(bufer, size);
+	int n = 0;//счетчик чисел в строке
+	for (char* pch = strtok(bufer, delimiter); pch; pch = strtok(NULL, delimiter))
+	{
+		number[n++] = atoi(pch);//функция atoi ASCII-string to integer преобразует строку в число, если содержит цифры.
+	}
+	switch (n)
+	{
+	case 1:obj.set_integer(number[0]); break;
+	case 2:
+	{
+		obj.set_numerator(number[0]);
+		obj.set_denominator(number[1]);
+		break;
+	}
+	case 3:obj(number[0], number[1], number[2]);
+		break;
+
+		return is;
+	}
 }
 Fraction operator+(const Fraction& left, const Fraction& right)
 {
@@ -371,7 +411,7 @@ Fraction operator/(Fraction left, Fraction right)
 }
 std::ostream& operator<<(std::ostream& os, const Fraction& obj)
 {
-	return os << obj.get_integer() << "(" << obj.get_numerator() << "/" << obj.get_denominator() << ")";
+	return obj.Print(os);
 
 }
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -437,6 +477,9 @@ bool operator <=(const Fraction& left, const Fraction& right)
 //#define COMPERESSON_OPERATOR
 //#define TYPE_CONVERSION_BASICS
 //#define CONVERSION_FROM_OTHER_TO_CLASS
+//#define CKLASS
+//#define HOME_WORK_1
+#define HOME_WORK_2
 
 void main()
 {
@@ -469,30 +512,47 @@ void main()
 #endif // ARIFMETICAL_OPERAND_CHEK
 
 #ifdef COMPERESSON_OPERATOR
-cout << (Fraction(1, 2) >= Fraction(5, 10)) << endl;
+	cout << (Fraction(1, 2) >= Fraction(5, 10)) << endl;
 #endif // COMPERESSON_OPERATOR
 #ifdef TYPE_CONVERSION_BASICS
 
 
 
-int a = 2;//No conversion
-double b = 3;//Conversion from less to more
-int c = b;//Conversion from more to less with no date loss
-int d = 4.5;//Conversion from more to less with data loss
+	int a = 2;//No conversion
+	double b = 3;//Conversion from less to more
+	int c = b;//Conversion from more to less with no date loss
+	int d = 4.5;//Conversion from more to less with data loss
 #endif // TYPE_CONVERSION_BASICS
 #ifdef CONVERSION_FROM_OTHER_TO_CLASS
 
 
 
-Fraction A = (Fraction)5;//Conversin from other to cllass Конструктором с 1 аргументам 
-A.Print();
-Fraction B;
-B = Fraction (8);//Conversion from other to class Оператором присваеванием 
-//explicit
+	Fraction A = (Fraction)5;//Conversin from other to cllass Конструктором с 1 аргументам 
+	A.Print();
+	Fraction B;
+	B = Fraction(8);//Conversion from other to class Оператором присваеванием 
+	//explicit
 #endif // 
+#ifdef CKLASS
+	Fraction A(2, 3, 4);
+	A.Print();
+	int a = (int)A;
+	cout << a << endl;
+#endif // CKLASS
+#ifdef HOME_WORK_1
 
-Fraction A(2, 3, 4);
-A.Print();
-int a = (int)A;
-cout << a << endl;
+
+
+	Fraction B(2, 3, 4);
+	double b = (double)B;
+	cout << b << endl;
+#endif // HOME_WORK_1	
+#ifdef HOME_WORK_2
+
+	Fraction B(2);
+	cout << B << endl;
+
+
+#endif // HOME_WORK_2
+
 }

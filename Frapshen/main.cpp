@@ -70,26 +70,32 @@ public:
 		this->denominator = 1;
 		//cout << "1ArgConstructor\t" << this << endl;
 	}
-	 Fraction(double integer)
-	 {
-		 this->integer = integer/2;
-		double num=integer;
-		int coll=0;		
+	Fraction(double integer)
+	{
+		integer += 1e-10;
+		//this->integer = integer / 2;
+		this->integer = 0;
+		double num = integer;
+		int coll = 0;
 		//cout << num - (int)num;
 		while (num - (int)num != 0)
 		{
 			num *= 10;
 			coll++;
+			if (coll == 5)
+			{
+				break;
+			}
 		}
 
 		this->numerator = integer * pow(10, coll);
-		this->denominator = 1*pow(10, coll);
-		
+		this->denominator = 1 * pow(10, coll);
+
 		this->reduse().to_proper();
-		
 
 
-		
+
+
 	}
 	Fraction(int numerator, int denominator)
 	{
@@ -419,7 +425,7 @@ bool operator <(Fraction left, Fraction right)
 	left.to_improper();
 	right.to_improper();
 
-	
+
 
 	return left.get_numerator() * right.get_denominator() <
 		right.get_numerator() * left.get_denominator();
@@ -439,7 +445,7 @@ bool operator ==(Fraction left, Fraction right)
 	return left.get_numerator() * right.get_denominator() ==
 		right.get_numerator() * left.get_denominator();
 
-	
+
 }
 bool operator !=(const Fraction& left, const Fraction& right)
 {
@@ -487,19 +493,19 @@ void main()
 	B.Print();
 	cout << A;
 #endif // ARIFMETICAL_OPERAND_CHEK
-//cout << (Fraction(1, 2) >= Fraction(5, 10)) << endl;
-	
+	//cout << (Fraction(1, 2) >= Fraction(5, 10)) << endl;
+
 #ifdef HOME_WORK_1
 
 
 
 	Fraction B(2, 3, 4);
-	double b = (double)B;	
+	double b = (double)B;
 	cout << b << endl;
 #endif // HOME_WORK_1	
 #ifdef HOME_WORK_2
 
-	Fraction B = 2.5;
+	Fraction B(2);
 	cout << B << endl;
 
 
