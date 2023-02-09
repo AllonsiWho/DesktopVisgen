@@ -21,36 +21,33 @@ public:
 		return str;
 	}
 	//   Constuctors:
-	String(int size = 80)
+	String(int size = 80):size(size),str(new char[size]{})
 	{
-		this->size = size;
-		this->str = new char[size] {};
+		
 		cout << "DefConstructor:\t" << this << endl;
 	}
-	String(const char* str)
+	String(const char* str):size(strlen(str)+1),str(new char[size]{})
 	{
-		this->size = strlen(str) + 1;//только так для работы с другими конструкторами
-		this->str = new char[size] {};
+		
 
 		//strcpy_s(this->str, size+1, str);
 		for (int i = 0; i < size; i++)this->str[i] = str[i];
 		cout << "1ArgConstructor:\t" << this << endl;
 	}
-	String(const String& other)
+	String(const String& other):size(other.size),str(new char[size]{})
 	{
 		//Deep copy
-		this->size = other.size;
-		this->str = new char[size] {};
+		
 		for (int i = 0; i < size; i++)
 			this->str[i] = other.str[i];
 		cout << "CopyConstructor:\t";
 
 	}
-	String(String&& other)noexcept// гарантированна не бросает исключение
+	String(String&& other)noexcept:size(other.size),str(other.str) // гарантированна не бросает исключение
 	{
-		//Shallow copy поверхностное копирование
-		this->size = other.size;
-		this->str = other.str;//Shallow copy
+		////Shallow copy поверхностное копирование
+		//this->size = other.size;
+		//this->str = other.str;//Shallow copy
 		other.size = 0;
 		other.str = nullptr;// nullptr -указатель на 0
 		cout << "MoveConstructor:" << this << endl;
@@ -147,13 +144,14 @@ std::ostream& operator<<(std::ostream& os, const String& obj)
 	return os << "Obj-" << a++ << "\t" << obj.get_str();
 }
 
-//#define BASE_CHECK
+#define BASE_CHECK
 void main()
 {
 
 	setlocale(LC_ALL, "");
 #ifdef BASE_CHECK
-
+	String str(5);
+	str.print();
 
 
 	String str1 = "Hello";
@@ -170,20 +168,21 @@ void main()
 	
 
 	String str4 = str3;//Copy constructor
+	str4.print();
 #endif // BASE_CHECK
 
-	String str4();//Здесь не вызываеться никакой конструктор, поотому что Не создаеться объект.
-	// Здесь объявляеться функция str4(), которая не принимает никаких параметров,
-	//и возвращает значение типа String.
-	//str4- это Не объект, это функция а для функции нельзя вызвать метод
-	//Если мы хотим явно вызвать конструктор по умолчанию, то это можно сделать так
-	String str5{}; //Явный вызов конструктор по умолчанию.
-	str5.print();
-	String str6{22};
-	str6.print();
-	String str7{ "World" };
-	str7.print();
-	String str8{ str7 };
-
+	//String str4();//Здесь не вызываеться никакой конструктор, поотому что Не создаеться объект.
+	//// Здесь объявляеться функция str4(), которая не принимает никаких параметров,
+	////и возвращает значение типа String.
+	////str4- это Не объект, это функция а для функции нельзя вызвать метод
+	////Если мы хотим явно вызвать конструктор по умолчанию, то это можно сделать так
+	//String str5{}; //Явный вызов конструктор по умолчанию.
+	//str5.print();
+	//String str6{22};
+	//str6.print();
+	//String str7{ "World" };
+	//str7.print();
+	//String str8{ str7 };
+	
 
 }
